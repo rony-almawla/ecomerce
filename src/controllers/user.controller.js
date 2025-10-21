@@ -1,5 +1,4 @@
 const User = require("../models/user.model");
-const user = require("../models/user.model")
 
 async function getAllUsers(request, reply){
     try{
@@ -11,7 +10,7 @@ async function getAllUsers(request, reply){
 }
 async function getUserById(request, reply){
     try{
-        const users = await User.findById(request.params.id);
+        const user = await User.findById(request.params.id);
         reply.send(user);
     }catch(error){
         reply.status(500).send(error);
@@ -38,7 +37,7 @@ async function updateUser(request, reply){
 }
 async function deleteUser(request, reply){
     try{
-        await user.findByIdAndDelete(request.params.id);
+        await User.findByIdAndDelete(request.params.id);
         reply.status(204).send("");
     }catch(error){
         reply.status(500).send(error);

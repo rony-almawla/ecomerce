@@ -1,5 +1,6 @@
 const userController = require("../controllers/user.controller");
 
+
 //in able to map routes in fastify
 async function routes(fastify,options){
     fastify.get("/",  userController.getAllUsers);
