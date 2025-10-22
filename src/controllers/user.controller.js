@@ -25,6 +25,29 @@ async function createUser(request, reply){
         reply.status(500).send(error);
     }
 }
+// async function createUser(request, reply){
+//     try{
+//         const { name, email, password, role } = request.body;
+
+//         const user = new User({
+//             name,
+//             email,
+//             passwordHash: password, // assign plain password to passwordHash
+//             role
+//         });
+
+//         const result = await user.save(); // triggers pre-save hook
+
+//         // remove passwordHash before sending response
+//         const { passwordHash, ...userWithoutPassword } = result.toObject();
+
+//         reply.status(201).send(userWithoutPassword);
+
+//     }catch(error){
+//         reply.status(500).send({ error: "Failed to create user", details: error.message });
+//     }
+// }
+
 async function updateUser(request, reply){
     try{
         const user = await User.findByIdAndUpdate(request.params.id, request.body, {
