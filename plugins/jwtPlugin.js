@@ -1,9 +1,9 @@
 const fp = require("fastify-plugin");
 
 module.exports = fp(async function(fastify,opts){
-    fastify.register(require("@fastify/jwt",{
-  secret: process.env.JWT_Signing_SECRET
-}))
+   fastify.register(require("@fastify/jwt"), {
+  secret: process.env.JWT_SIGNING_SECRET,
+});
 
     fastify.decorate("jwtAuth", async function(request, reply){
         try{

@@ -1,7 +1,8 @@
 const cartController = require('../controllers/cart.controller');
 
-async function routes(fastify, options){
+async function routes(fastify, options) {
     fastify.get("/", cartController.getAllCarts);
+    fastify.get("/search", cartController.searchCarts);
     fastify.get("/:id", cartController.getCartById);
     fastify.post("/", cartController.createCart);
     fastify.put("/:id", cartController.updateCart);

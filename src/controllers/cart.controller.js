@@ -1,17 +1,72 @@
 const Cart = require("../models/cart.model");
 
-async function getAllCarts(request, reply){
-    try{
-        const carts = await Carts.find().populate('userId').populate('items.productId');
-        reply.send(carts)
-    }catch(error){
-        reply.status(500).send({error:'Failed to fecth Carts', details:error.message});
+async function getAllCarts(request, reply) {
+    try {
+        const { page = 1, limit = 10, userId, hasItems, productId, sort = 'createdAt' } = request.query;
+        const filter = {};
+
+        if (userId) filter.userId = userId;
+        if (hasItems === 'true') filter['items.0'] = { $exists: true };
+        if (hasItems === 'false') filter['items.0'] = { $exists: false };
+        if (productId) filter['items.productId'] = productId;
+
+        const total = await Cart.countDocuments(filter);
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const carts = await Cart.find(filter)
+            .populate('userId')
+            .populate('items.productId')
+            .sort(sort)
+            .skip(skip)
+            .limit(Number(limit));
+
+        reply.send({
+            metadata: { total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) },
+            data: carts
+        });
+
+    } catch (error) {
+        reply.status(500).send({ error: 'Failed to fetch carts', details: error.message });
     }
 }
 
+async function searchCarts(request, reply) {
+    try {
+        const { query, page = 1, limit = 10, sort = 'createdAt' } = request.query;
+        const filter = {};
+
+        if (query) {
+            filter.$or = [
+                { 'userId.name': { $regex: query, $options: 'i' } },
+                { 'items.productId.name': { $regex: query, $options: 'i' } }
+            ];
+        }
+
+        const total = await Cart.countDocuments(filter);
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const carts = await Cart.find(filter)
+            .populate('userId')
+            .populate('items.productId')
+            .sort(sort)
+            .skip(skip)
+            .limit(Number(limit));
+
+        reply.send({
+            metadata: { total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) },
+            data: carts
+        });
+
+    } catch (error) {
+        reply.status(500).send({ error: 'Cart search failed', details: error.message });
+    }
+}
+
+
+
 async function getCartById(request, reply){
     try{
-        const cart = await Cart.findById(request.params.id).populate('userId'.populate('items.productId'));
+        const cart = await Cart.findById(request.params.id).populate("userId").populate("items.productId");
         if(!cart){
             return reply.status(404).send({error:'Cart not Found'});
         }
@@ -33,9 +88,9 @@ async function createCart(request, reply){
 
 async function updateCart(request,reply){
     try{
-        const cart = awaitCart.findByIdAndUpdate(request.params.id, request.body,{
-            new:true,
-            runValidators:true
+        const cart = await Cart.findByIdAndUpdate(request.params.id, request.body, {
+            new: true,
+            runValidators: true,
         });
 
     }catch(error){
@@ -55,6 +110,6 @@ async function deleteCart(request, reply){
     }
 }
 
-module.exports = {
-  getAllCarts,getCartById,createCart,updateCart,deleteCart
+module.exports = { 
+    getAllCarts, searchCarts, getCartById, createCart, updateCart, deleteCart 
 };
