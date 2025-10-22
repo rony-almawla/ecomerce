@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const userRoutes = require('./routes/user.routes');
 const productRoutes = require('./routes/product.routes');
 const orderRoutes = require('./routes/order.routes');
+const cartRoutes = require('./routes/cart.routes');
 
 // Connect to MongoDB
 console.log("MONGODB_URI:", process.env.MONGODB_URI);
@@ -18,6 +19,7 @@ async function startServer() {
   fastify.register(userRoutes, { prefix: "/api/v1/users" });
   fastify.register(productRoutes, { prefix: "/api/v1/products" });
   fastify.register(orderRoutes, {prefix: "/api/v1/orders"});
+  fastify.register(cartRoutes,{prefix: "/api/v1/carts"});
 
   try {
     await fastify.listen({

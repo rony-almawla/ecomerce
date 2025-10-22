@@ -7,4 +7,4 @@ async function routes(fastify, options){
     fastify.put("/:id", orderController.updateOrder);
 }
 
-module.exports = routes
+module.exports = routes;
