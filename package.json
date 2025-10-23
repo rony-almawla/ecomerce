@@ -20,6 +20,7 @@
     "fastify-jwt": "^4.2.0",
     "fastify-plugin": "^5.1.0",
     "fastify-swagger": "^5.2.0",
+    "joi": "^18.0.1",
     "mongoose": "^8.19.2"
   }
 }

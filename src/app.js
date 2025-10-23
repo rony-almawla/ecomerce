@@ -3,8 +3,8 @@ const fastify = require("fastify")({ logger: true });
 const mongoose = require("mongoose");
 const jwtPlugin = require('../plugins/jwtPlugin');
 
-const {basicAuth} = require("../middlewares/auth");
-
+const { basicAuth } = require("./middlewares/auth");
+const auth = require('./middlewares/auth');
 
 fastify.register(jwtPlugin)
 
@@ -14,7 +14,7 @@ const userRoutes = require('./routes/user.routes');
 const productRoutes = require('./routes/product.routes');
 const orderRoutes = require('./routes/order.routes');
 const cartRoutes = require('./routes/cart.routes');
-const auth = require('../middlewares/auth');
+
 
 
 // Connect to MongoDB

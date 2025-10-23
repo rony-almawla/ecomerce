@@ -1,11 +1,14 @@
-const auth = require("../../middlewares/auth");
-const { basicAuth } = require("../../middlewares/auth");
+const { basicAuth } = require("../middlewares/auth");
+const auth = require('../middlewares/auth');
 const userController = require("../controllers/user.controller");
 const User = require("../models/user.model");
+const { validate } = require("../middlewares/validate");
+const { createUserSchema, updateUserSchema, loginUserSchema } = require("../validations/user.validation");
+
 
 //in able to map routes in fastify
 async function routes(fastify, options) {
-    fastify.post("/login", async (request, reply) => {
+     fastify.post("/login", { preHandler: validate(loginUserSchema) }, async (request, reply) => {
         const { email, password } = request.body;
         //check the password and username
         try {
@@ -30,9 +33,10 @@ async function routes(fastify, options) {
     });
 
 
+
     fastify.get("/", { onRequest: [fastify.jwtAuth] }, userController.getAllUsers);
-    fastify.post("/", userController.createUser);
-    fastify.put("/:id", userController.updateUser);//{onRequest: [fastify.jwtAuth, fastify.hasRole("Admin")]},
+    fastify.post("/", {preHandler: validate[(createUserSchema)]} ,userController.createUser);
+    fastify.put("/:id", {preHandler: validate[(updateUserSchema)]} , userController.updateUser);//{onRequest: [fastify.jwtAuth, fastify.hasRole("Admin")]},
     fastify.delete("/:id", userController.deleteUser);
     fastify.get("/:id", userController.getUserById);
 
